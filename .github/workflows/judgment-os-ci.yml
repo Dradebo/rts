@@ -1,0 +1,43 @@
+name: Judgment OS CI
+
+on:
+  push:
+    branches:
+      - judgment-os/baton-field-v0
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install donor dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Install donor build shim
+        run: npm install --no-save --legacy-peer-deps esbuild
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Judgment OS tests
+        run: npx vitest --environment jsdom --run tests/judgment/baton-field.spec.ts
+
+      - name: Build
+        run: npm run build-only
+
+      - name: Donor debt report
+        if: always()
+        run: |
+          echo "Known donor debt: peer skew, 4 legacy Vitest mock suites, and dependency audit findings."
+          echo "Judgment OS acceptance remains isolated from those upstream failures."
