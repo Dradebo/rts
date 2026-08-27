@@ -21,8 +21,11 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install
+      - name: Install donor dependencies
         run: npm ci --legacy-peer-deps
+
+      - name: Install donor build shim
+        run: npm install --no-save --legacy-peer-deps esbuild
 
       - name: Type check
         run: npm run type-check
@@ -33,8 +36,8 @@ jobs:
       - name: Build
         run: npm run build-only
 
-      - name: Donor test debt report
+      - name: Donor debt report
         if: always()
         run: |
-          echo "Legacy donor suite is currently incompatible with Vitest 4 mock hoisting in 4 suites."
-          echo "Tracked separately from Judgment OS acceptance; do not treat as Baton Field regression."
+          echo "Known donor debt: peer skew, 4 legacy Vitest mock suites, and dependency audit findings."
+          echo "Judgment OS acceptance remains isolated from those upstream failures."
