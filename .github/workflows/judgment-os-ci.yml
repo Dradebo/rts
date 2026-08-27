@@ -22,13 +22,13 @@ jobs:
           cache: npm
 
       - name: Install
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Type check
         run: npm run type-check
 
       - name: Test
-        run: npm test -- --runInBand
+        run: npm test
 
       - name: Build
         run: npm run build-only
